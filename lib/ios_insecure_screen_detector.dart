@@ -6,7 +6,7 @@ typedef ScreenRecordCallback = void Function(bool);
 
 class IosInsecureScreenDetector {
   static const MethodChannel _channel =
-    const MethodChannel('staking_power/ios_insecure_screen_detector');
+      const MethodChannel('staking_power/ios_insecure_screen_detector');
 
   static IosInsecureScreenDetector get instance => _getInstance();
   static IosInsecureScreenDetector? _instance;
@@ -16,7 +16,7 @@ class IosInsecureScreenDetector {
   IosInsecureScreenDetector._internal();
 
   static IosInsecureScreenDetector _getInstance() {
-    if(null == _instance) {
+    if (null == _instance) {
       _instance = IosInsecureScreenDetector._internal();
     }
     return _instance!;
@@ -29,10 +29,13 @@ class IosInsecureScreenDetector {
   Future<void> initialize() async {
     _channel.setMethodCallHandler(_handleMethod);
     await _channel.invokeMethod('initialize');
+    print('Package initialized');
   }
 
   /// Add callback actions when screenshot or screen record events received.
-  void addListener(ScreenshotCallback screenshotCallback, ScreenRecordCallback screenRecordCallback) {
+  void addListener(ScreenshotCallback screenshotCallback,
+      ScreenRecordCallback screenRecordCallback) {
+    print('Listeners initialized');
     _onScreenshotCallback = screenshotCallback;
     _onScreenRecordCallback = screenRecordCallback;
   }
@@ -53,22 +56,33 @@ class IosInsecureScreenDetector {
   }
 
   Future<dynamic> _handleMethod(MethodCall call) async {
-    switch(call.method) {
-      case 'onScreenshotCallback': {
-        if (null != _onScreenshotCallback) {
-          _onScreenshotCallback!();
+    switch (call.method) {
+      case 'onScreenshotCallback':
+        {
+          print(call.method);
+          print('onScreenCallBack ${_onScreenshotCallback?.toString()}');
+          if (null != _onScreenshotCallback) {
+            _onScreenshotCallback!();
+          }
         }
-      } break;
+        break;
 
-      case 'onScreenRecordCallback': {
-        dynamic isCaptured = call.arguments;
-        if (null != _onScreenRecordCallback && isCaptured != null && isCaptured is bool) {
-          _onScreenRecordCallback!(isCaptured);
+      case 'onScreenRecordCallback':
+        {
+          dynamic isCaptured = call.arguments;
+          print(isCaptured);
+          print('onScreenCallBack ${_onScreenRecordCallback?.toString()}');
+          if (null != _onScreenRecordCallback &&
+              isCaptured != null &&
+              isCaptured is bool) {
+            print('Trying to send $isCaptured');
+            _onScreenRecordCallback!(isCaptured);
+          }
         }
-      } break;
+        break;
 
       default:
-        throw('method not defined');
+        throw ('method not defined');
     }
   }
 }
