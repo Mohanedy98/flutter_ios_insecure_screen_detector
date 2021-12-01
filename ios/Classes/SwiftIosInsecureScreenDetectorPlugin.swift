@@ -47,8 +47,10 @@ public class SwiftIosInsecureScreenDetectorPlugin: NSObject, FlutterPlugin {
           queue: OperationQueue.main) { notification in
             let isCaptured = UIScreen.main.isCaptured
             if isCaptured {
+            print('Invoking method')
               SwiftIosInsecureScreenDetectorPlugin.channel!.invokeMethod("onScreenRecordCallback", arguments: true)
             } else {
+                  print('Invoking method')
               SwiftIosInsecureScreenDetectorPlugin.channel!.invokeMethod("onScreenRecordCallback", arguments: false)
             }
           }
